@@ -16,14 +16,12 @@ When using the `GET` method to submit sensitive data (like usernames and passwor
   2. **Server Logs:** If an attacker compromises the server, the entire URL history is exposed.
   3. **Network Infrastructure (Proxies/Firewalls):** Intermediate devices log full URLs by default.
 
-*(📸 Reference Images: Screenshot_20260602-140719.jpg & Screenshot_20260601-155346.jpg)*
 
 ---
 
 ### 🔹 POST Requests & Dispelling the "Encryption" Myth
 Unlike GET, the `POST` method removes the data from the URL and places it inside an abstracted section of the request known as the **Request Body**.
 
-*(📸 Reference Image: Screenshot_20260602-140712.jpg)*
 
 * **⚠️ The Dangerous Misconception:** Many believe that a `POST` request is automatically secure just because the credentials aren't visible in the URL bar. 
 * **The Hard Reality:** `POST` only protects data from "shoulder surfing" (people looking at your screen) and browser history. The data itself is still transmitted in raw **Plain Text**!
@@ -31,7 +29,6 @@ Unlike GET, the `POST` method removes the data from the URL and places it inside
 
 > **💡 The Golden Rule:** `POST` hides data, but it **does not** encrypt it. True encryption requires the deployment of the secure **HTTPS** protocol.
 
-*(📸 Reference Images: Screenshot_20260602-140705.jpg & Screenshot_20260602-140657.jpg)*
 
 ---
 
@@ -47,7 +44,6 @@ These codes are divided into **5 distinct families** based on their starting dig
 | **`4xx`** | **Client Errors** | The fault lies with the user (bad request, wrong syntax, or unauthorized path). | `400 Bad Request` <br> `401 Unauthorized` (Needs login) <br> `403 Forbidden` (No permission) <br> `404 Not Found` <br> `405 Method Not Allowed` <br> `429 Rate Limit` (Too many requests) |
 | **`5xx`** | **Server Errors** | The request was valid, but the server crashed or encountered an internal fault. | `500 Internal Server Error` (Code crash) <br> `502 Bad Gateway` <br> `503 Service Unavailable` (Server overload) |
 
-*(📸 Reference Images: Screenshot_20260602-140600.jpg, Screenshot_20260602-140518.jpg, Screenshot_20260602-140430.jpg, Screenshot_20260602-140338.jpg, & Screenshot_20260602-140259.jpg)*
 
 ---
 
