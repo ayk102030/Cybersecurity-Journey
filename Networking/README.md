@@ -38,11 +38,13 @@ When a browser sends a request, the server responds with a **3-digit** status co
 
 These codes are divided into **5 distinct families** based on their starting digit:
 
+
 | Code Family | Technical Classification | Cybersecurity Significance | Key Examples |
+| :--- | :--- | :--- | :--- |
 | **`2xx`** | **Success** | The request was valid, understood, and processed successfully. | `200 OK` (Page exists) <br> `201 Created` (Resource created) |
 | **`3xx`** | **Redirection** | The requested resource moved, and the server is redirecting the client. | `301 Moved Permanently` <br> `302 Found` (Temporary redirect) |
-| **`4xx`** | **Client Errors** | The fault lies with the user (bad request, wrong syntax, or unauthorized path). | `400 Bad Request` <br> `401 Unauthorized` (Needs login) <br> `403 Forbidden` (No permission) <br> `404 Not Found` <br> `405 Method Not Allowed` <br> `429 Rate Limit` (Too many requests) |
-| **`5xx`** | **Server Errors** | The request was valid, but the server crashed or encountered an internal fault. | `500 Internal Server Error` (Code crash) <br> `502 Bad Gateway` <br> `503 Service Unavailable` (Server overload) |
+| **`4xx`** | **Client Errors** | The fault lies with the user (bad request, wrong syntax, or unauthorized path). | `400 Bad Request` <br> `401 Unauthorized` <br> `403 Forbidden` <br> `404 Not Found` <br> `405 Method Not Allowed` <br> `429 Rate Limit` |
+| **`5xx`** | **Server Errors** | The request was valid, but the server crashed or encountered an internal fault. | `500 Internal Server Error` <br> `502 Bad Gateway` <br> `503 Service Unavailable` |
 
 
 ---
