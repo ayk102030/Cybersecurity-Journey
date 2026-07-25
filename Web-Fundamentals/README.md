@@ -1,0 +1,1 @@
+A structured roadmap for learning the essential Web Fundamentals required for Web Penetration Testing. It covers HTTP, web architecture, authentication, sessions, cookies, CORS, HTTPS, and other core concepts to build a solid foundation before exploring web vulnerabilities.
