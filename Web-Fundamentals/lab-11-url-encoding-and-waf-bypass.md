@@ -1,4 +1,4 @@
-# 🌐 Lab 11: URL Encoding, Context-Aware Encoding & WAF Bypass
+# 🌐 Lab 11: URL Encoding (Percent-Encoding) & Filter/WAF Bypass
 
 ![Category](https://img.shields.io/badge/Category-Web_Security-blue?style=flat-square)
 ![Lab](https://img.shields.io/badge/Lab-11-orange?style=flat-square)
@@ -6,13 +6,11 @@
 
 ## 📌 Overview
 
-**URL Encoding** (also known as **Percent-Encoding**) is a standard mechanism used to convert special and reserved characters within Web Uniform Resource Locators (URLs) into a safe, unambiguous format that web browsers and web servers can reliably transmit over HTTP. 
-
-However, encoding in web security goes beyond URL transmission. To effectively sanitize input and defend against **Cross-Site Scripting (XSS)** and **WAF Bypasses**, developers and security auditors must understand **Context-Aware Encoding**. Applying the wrong encoding type for a specific HTML/JS context will fail to mitigate vulnerabilities.
+**URL Encoding** (also known as **Percent-Encoding**) is a standard mechanism used to convert special and reserved characters within Web Uniform Resource Locators (URLs) into a safe, unambiguous format that web browsers and web servers can reliably transmit and interpret over HTTP. In security assessments, understanding URL encoding is essential for identifying **Input Normalization flaws** and executing **Web Application Firewall (WAF) / Filter Bypass** techniques.
 
 ---
 
-## 📊 Quick Reference Table: URL Encoding
+## 📊 Quick Reference Table
 
 | Original Character | URL Encoded (Hex) | Purpose & Vulnerability Context |
 | :---: | :---: | :--- |
@@ -70,110 +68,6 @@ flowchart TD
 * **Flaw Execution:** The security filter inspects the incoming raw HTTP request string **before** input normalization occurs.
 * **Bypass Mechanism:** A naive WAF signature searches specifically for explicit literal string patterns like `<script>`. When the attacker submits `%3Cscript%3E`, the raw signature check fails to match.
 * **Backend Execution:** The WAF permits the request to pass. Upon arrival at the backend server framework (e.g., PHP, Express, ASP.NET), the framework automatically URL-decodes parameter values into `<script>`, causing the malicious payload to execute.
-
----
-
-## 🎯 Context-Aware Encoding (Why HTML Encoding Fails in Non-HTML Contexts)
-
-> [!IMPORTANT]
-> **Core Rule:** The type of encoding applied must strictly match the **Context** where user input is rendered. Applying standard HTML Entity Encoding (`&lt;`, `&gt;`) outside plain HTML body elements will fail to prevent XSS.
-
-### 1. Context 1: Inside `<script>` Tags
-
-#### ❌ The Misconception:
-```html
-<script>
-    var username = "&lt;script&gt;alert(1)&lt;/script&gt;";
-</script>
-```
-Developers assume this is safe because `<` was converted to `&lt;`. However, browsers do **not** parse HTML entities inside execution blocks like `<script>`.
-
-#### 💥 The Real Threat (Breaking Out of String Literals):
-The danger inside a `<script>` block is not inserting `<script>` tags, but rather **breaking out of the string literal boundary**.
-
-Consider the following vulnerable server-side template:
-```html
-<script>
-    var username = "USER_INPUT";
-</script>
-```
-
-If an attacker supplies `";alert(1);//` as `USER_INPUT`, the rendered DOM becomes:
-```javascript
-var username = "";alert(1);//";
-```
-The string is closed prematurely, executing `alert(1)` in the JavaScript engine.
-
-#### ❓ Why HTML Encoding Fails Here:
-Standard HTML Encoding only sanitizes characters like `<`, `>`, and `&`. It leaves critical JavaScript delimiters intact:
-* `"` *(Double Quote)*
-* `'` *(Single Quote)*
-* `\` *(Backslash)*
-* `/` *(Forward Slash)*
-
-#### ✅ Proper Defense:
-Use **JavaScript String Encoding** (Unicode/Hex escaping such as `\x22` or `\u0022`) or completely avoid rendering untrusted dynamic data inside inline `<script>` blocks (prefer JSON endpoints or data attributes).
-
----
-
-### 2. Context 2: Inside Event Handlers (`onclick`, `onload`, `onerror`)
-
-#### ❌ The Misconception:
-```html
-<button onclick="console.log('USER_INPUT')">Click Me</button>
-```
-
-If an attacker inputs `');alert(1);//`, the rendered code becomes:
-```html
-<button onclick="console.log('');alert(1);//')">Click Me</button>
-```
-When clicked, the browser executes `console.log('')` followed immediately by `alert(1)`.
-
-#### ❓ Why HTML Encoding Fails Here:
-An event handler attribute is **JavaScript embedded inside an HTML attribute**. Standard HTML encoding does not prevent JavaScript syntax manipulation within the inline script parser.
-
-#### ✅ Proper Defense:
-Requires **Combinatorial Encoding**:
-1. First, apply **JavaScript Encoding** (to secure the payload inside the JS logic).
-2. Second, apply **HTML Attribute Encoding** (to secure the payload within the HTML attribute context).
-
----
-
-### 3. Context 3: Inside `href` and `src` URI Attributes
-
-#### ❌ The Misconception:
-```html
-<a href="USER_INPUT">View Profile</a>
-```
-
-If an attacker inputs `javascript:alert(1)`, the rendered DOM becomes:
-```html
-<a href="javascript:alert(1)">View Profile</a>
-```
-When clicked, the browser executes the `javascript:` pseudo-protocol, triggering `alert(1)`.
-
-#### ❓ Why HTML Encoding Fails Here:
-`javascript:alert(1)` contains no `<` or `>` characters. HTML encoding leaves the string completely unchanged:
-```html
-href="javascript:alert(1)"
-```
-
-#### ✅ Proper Defense:
-* **Protocol / Scheme Validation:** Enforce strict URL scheme whitelisting at the server layer.
-* **Allowed Protocols:** `https:`, `http:`, `mailto:`
-* **Blocked Protocols:** `javascript:`, `data:`, `vbscript:`
-
----
-
-### 💡 Why Is It Called "Context"?
-
-| Rendered Location | Example Syntax | Required Defensive Encoding |
-| :--- | :--- | :--- |
-| **HTML Body** | `<div>USER_INPUT</div>` | **HTML Entity Encoding** (`&lt;`, `&gt;`, `&quot;`) |
-| **JavaScript Block** | `<script>var x="USER_INPUT";</script>` | **JavaScript Unicode/Hex Encoding** (`\xHH`) |
-| **HTML Attribute** | `<input value="USER_INPUT">` | **HTML Attribute Encoding** |
-| **URL Parameter** | `<a href="/page?q=USER_INPUT">` | **URL / Percent Encoding** (`%XX`) |
-| **URI Attribute** | `<a href="USER_INPUT">` | **URL Scheme Whitelisting** (`https://` only) |
 
 ---
 
