@@ -1,7 +1,7 @@
 # 🌐 Lab02: DOM Sinks — Execution Mechanisms, Detailed Vulnerability Vectors & Categorization
 
 ![Category](https://img.shields.io/badge/Category-DOM_Security-blue?style=flat-square)
-![Lab](https://img.shields.io/badge/Lab-26-orange?style=flat-square)
+![Lab](https://img.shields.io/badge/Lab-02-orange?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Completed-brightgreen?style=flat-square)
 
 ## 📌 Overview
